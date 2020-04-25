@@ -1,0 +1,187 @@
+---
+title: Chasing evolutionary explanations from phylogenetic diversity metrics - the lazy way
+author: Sabhrina Gita Aninta
+date: '2019-04-10'
+slug: chasing-evolutionary-explanations-from-phylogenetic-diversity-metrics
+categories: [rstats]
+tags:
+- MSc
+- literature
+- research
+image:
+  caption: ''
+  focal_point: ''
+---
+
+I think phylogenetic diversity got its hype at around 2000 when phylogenetic information have become abundant. Using species' evolutionary history embedded in their phylogenetic tree to define biodiversity is tempting. As phylogenetic tree summarizes species evolutionary history, which of course included the many ecological processes shaping their traits, using it to account for species unique characteristics in any biodiversity assessment should lead to interesting new insights. 
+
+Unfortunately, I did not found many evolutionary insights written in papers about phylogenetic diversity.
+
+When I said ''papers about phylogenetic diversity'', I meant all research **using phylogenetic diversity metrics as their response variables**. In my opinion, most authors are stopping in ''phylogenetic diversity is a better measure of biodiversity''. This happens with many applied researches which are trying to give recommendations on conservation practice. Phylogenetic diversity was considered to summarize any characters not yet covered by functional diversities so that it could serve to optimize area prioritization.
+
+To extend this conclusion beyond my subjective opinion, I tried to analyze the papers I read using **Automated Content Analysis** (ACA). I [read about ACA](https://methodsblog.com/2017/01/12/big-literature-aca/#more-5521) when I was working on my master thesis and decided that I want to try understanding all available topics in the literature related to phylogenetic diversity using ACA. The title ''How to Synthesize 100 Articles in Under 10 Minutes'' indeed looks fun for someone who are lazy enough to read back then although (SPOILER ALERT) it was not exactly under 10 minutes.
+
+# What Automated Content Anaysis does
+
+The fundamental approach in ACA is this: (1) identify the concepts, (2) define the concepts, (3) classify the literature by the concepts. In identifying concepts, we are identifying single words that occur frequently in literature and are likely to represent important concepts. In defining concepts, a thesaurus is defined for each concepts. I take this as connecting series of words that are more related to each other compared to other series of words. For example, in the concept of ''evolution'', we are likely to find words such as  ''selection'',  ''mutation'',  ''drift'',  ''lineage'', etc, whereas for the concept   ''environmental filtering'', we are likely to find words such as  ''interaction'',  ''competition'',   ''habitat'',  etc. The last step of ACA is categorizing the literature according to the concepts identified and defined in the first two steps. This could results in trend analyses, concept maps, quadrant reports, etc.
+
+The article about ACA listed several softwares to do ACA, and `R` is one of them. In `R`, there were three recommended packages: `topicmodels`, `lda`, and `stm`. These R packages, however, did not allow for user-defined concepts so we **could not sort the concepts as we know it**. We could not decide that the ''evolution''  generate words such as  ''selection'',  ''lineage'', etc; it will depend to the algorithm. 
+
+This project actually consists of two big sub-project: (1) Extracting text from all the papers that I have ~~read~~ skimmed through and converting it to the right `R` object for structural topic modelling, (2) Doing the structural topic modelling itself. Nonetheless, to keep the discussion within the topics of phylogenetic diversity research, I would only briefly explain how I extracted text information from pdf files.
+
+## Extracting text from pdf files
+
+There are two ways of [reading multiple pdf files to `R`](https://medium.com/@CharlesBordet/how-to-extract-and-clean-data-from-pdf-files-in-r-da11964e252e):
+
+1. Using [`pdftools`](https://ropensci.org/tutorials/pdftools_tutorial/)
+2. Using [`tm`](https://cran.r-project.org/web/packages/tm/vignettes/tm.pdf)
+
+Other than the links I provided, there were lots of other tutorials on mining text data from pdf files. I just re-adjust the methods used in those various articles to my need. 
+
+To read all the pdf files we want to analyse, we just need to have them all in one directory. Afterwards, the tricky part of reading multiple papers in pdf into `R` was the different layouts and typesetting used by different journals. The way around this was defining a function that stripped the layout from the papers so that we got only the texts. The `tm::readPDF` function did a really good job on this, but you got the VCorpus object that was not really easy on the eye.
+
+```{r, readAllPDF, message=FALSE, eval=FALSE}
+library(tm)
+read <- readPDF(control = list(text = "-layout"))
+
+## Getting all my literature in one directory
+file_dir<-c("D:/Master/Thesis/PhylogeneticDiversity/PD_as_response_var") # literature directory
+file_vector<-list.files(file_dir) # list of file names
+
+document <- Corpus(DirSource(file_dir), readerControl = list(reader = read))
+document # it is a VCorpus object
+str(document)
+doc <- content(document[[112]])
+head(doc) ## checking the papers content
+```
+
+To see the resulting extraction, I change the VCorpus into tidytext format using `tidytext::tidy`. This gives me a nice tidytext format that can be saved into a neat dataframe for possible later use.
+
+```{r tdyCorpus, eval=FALSE}
+## Tidying corpus
+library(tidytext)
+document_tidy<-tidy(document)
+document_tidy
+write.csv(document_tidy,file="D:/Master/Rcourse/myWebsite/content/post/corpus_pd.csv",row.names = F)
+```
+
+This tidytext format also [could be changed again](https://www.tidytextmining.com/dtm.html) to VCorpus format accordingly when needed.  I recommend you this [introductory chapter](https://www.tidytextmining.com/tidytext.html) about tidytext and all the chapters within the book if you are interested in training your skills in text mining! Some codes may or may not work for you due to bugs and issues, so don't forget to also stalk the discussions and comments in Julia Silge's [GitHub](https://github.com/juliasilge) and [website](https://juliasilge.com) for updates and technical issues.
+
+## Preparing the text for ACA
+``` {r reading, message=FALSE,include=FALSE}
+rm(list=ls())
+corpus_pd<-read.csv("corpus_pd.csv",stringsAsFactors = F)
+```
+The blog post on ACA only gave us a general idea on how ACA could be done; depending on the tools we decided to use, we need to learn how the tools do stuffs all over again. To identify the concepts in a collection of literature, the approach that was commonly used was using latent Dirichlet allocation (LDA) algorithm to model the topics (concepts) within the papers. The open book ''Text Mining with R'' gave a very clear brief introduction on LDA, but if you are interested for more explanation, I suggest this [review article](http://www.cs.columbia.edu/~blei/papers/Blei2012.pdf) by David M Blei which is about 15 minutes reading and really informative about LDA.
+
+After reading several tutorials on topic modelling with various tools in `R`, I decided to go with Julia Silge's demo on using  [`stm` package for analysing Sherlock Holmes stories](https://juliasilge.com/blog/sherlock-holmes-stm/) while also consulting on [the stm vignette](https://cran.r-project.org/web/packages/stm/vignettes/stmVignette.pdf).
+
+To do topic modelling in `stm`, we should first convert our tidytext format to **document-feature matrix** (DFM) object in `R`. This could be [easily done from a tidytext](https://www.tidytextmining.com/dtm.html). In the following code, `text` stands for paper content and `id` stands for documents' titles for identifier. As I want to remove several words that were used neutrally, I made a new data.frame of ''stop_words'' to remove.
+
+```{r tidyCorpus, message=FALSE}
+library(dplyr)
+library(tidytext)
+library(tidyverse)
+library(SnowballC)
+
+stop_words_add <- tibble(word=c("phylogenetic","diversity","species","et","al"), lexicon="additional")
+
+corpus_pd_dfm <- corpus_pd %>% 
+  unnest_tokens(word,text) %>% 
+  anti_join(stop_words) %>% # until here you got tidytext format
+  anti_join(stop_words_add) %>% # removing these words as they were too common and used neutrally in all papers
+  filter(!str_detect(word, "[:digit:]")) %>% # removing numbers as we don't need the numbers for concept analysis
+  filter(!str_detect(word, "[[:punct:]]")) %>% # removing punctuations, if any
+  mutate(word = wordStem(word)) %>% # stemming words
+  count(id, word) %>% 
+  cast_dfm(id, word, n) # until here you got document-term-matrix format
+
+corpus_pd_dfm # checking document-term-matrix format for topic modelling
+```
+
+After we are ready with our documents in DFM format, we could model the topics using the `stm` function. In the following code, I assume that there were six topics discussed within the papers investigating phylogenetic diversity (`K=6`). I also determined the seed to enable me to reproduce the results in a later chance. I set the `verbose` to `FALSE` so that the messages did not overwhelm my console, but you could set it to `TRUE` if you want to know what the function is doing while you are running it. 
+
+```{r stmModel, message=FALSE}
+library(stm)
+
+# This will take a while
+pd_stm<-stm(corpus_pd_dfm, K=6, init.type = "LDA", verbose = F, seed=1234)
+```
+
+The package `stm` has various plotting options to visualize the results of our model within the `plot.STM` function. To visualize the words associated with each of the six topics, we could choose `type = "labels"`.
+
+```{r stmInspectLabels, message=FALSE, fig.cap="Related words comprising the six topics assigned using stm"}
+# Inspecting topics
+plot.STM(pd_stm,type = "labels", width=80, oma=c(0,0,0,0))
+```
+
+The words will look a bit weird as a result of `SnowballC::wordStem` to collect words like ''community'' and ''communities'' as a single term (here ''commun''), along with other version of this word. From the words associated, we shall see that only Topic 2 associated with ''evolution''. We would like to see, of course, how exactly many are the words within each topics. For this, I like to go back to tidytext format as plotting using `ggplot2` and `dplyr` only happens with this format and those two packages give much freedom in deciding how we want to visualize our data.
+
+```{r visualizeWordProb, message=FALSE}
+pd_beta<-tidy(pd_stm)
+
+## getting reorder_within function
+source("https://raw.githubusercontent.com/juliasilge/tidytext/master/R/reorder_within.R")
+
+## plotting most frequent words
+pd_beta %>%
+    group_by(topic) %>%
+    top_n(10, beta) %>%
+    ungroup() %>%
+    mutate(topic = paste0("Topic ", topic),
+           term = reorder_within(term, beta, topic)) %>%
+    ggplot(aes(term, beta, fill = as.factor(topic))) +
+    geom_col(alpha = 0.8, show.legend = FALSE) +
+    facet_wrap(~ topic, scales = "free_y") +
+    coord_flip() +
+    scale_x_reordered() +
+    labs(x = NULL, y = expression(beta),
+         title = "Highest word probabilities for each topic",
+         subtitle = "Different words are associated with different topics")
+```
+
+The $\beta$ values were the probabilities that the words were generated by each topic. For example, there was a probability of ~0.025 that the word ''forest'' was generated by Topic 4 (whatever that is) and a probability of ~0.005 by Topic 3. 
+
+We could also see how the words are used between two topics using `type="perspectives"`. This option creates a graphical display of topical contrast with ''words are sized proportional to their use within the plotted topic-covariate combinations and oriented along the X-axis based on how much they favor one of the two configurations.'' We could use this to see how many words overlapped in frequency between Topic 4 and Topic 3 which are generating the word forest at considerable probabilities.
+
+```{r stmInspectTopics, fig.cap="Related words comprising the six topics assigned using stm"}
+## Inspecting topics
+plot.STM(pd_stm,type = "perspectives", topics=c(3,4))
+```
+
+From the plot, we could see that the ''unifying'' theme of the two topics was ''ecologi'', ''studi'', and ''effect''. This could mean that the two topics discussed a lot about ecological studies on the effect of certain variables towards phylogenetic diversity. We just do not see the word ''ecological'' and ''studies'' due stemming. Topic 3 was distinct from Topic 4 in terms of study subject; they it discusses plant whereas Topic 5 discusses forest. The word ''landscap'', ''fragment'', and ''conserv'' inidcate that Topic 4 is a study around habitat fragmentation which measure many aspects of forest, probably mostly with the metric ''pd''.
+
+# Where are the evolutionary explanations?
+
+Although I got the word ''evolution'' in Topic 2, I did not see many other words related to evolutionary concepts such as ''selection'', ''drift'', ''mutation'', or ''gene flow''. The ecological analogues of these terms (see [Vellend (2010)](http://mvellend.recherche.usherbrooke.ca/Vellend_CommunityEcology_QRB2010.pdf)) were also absent, such as ''speciation'' (for mutation), ''dispersal'' (for gene flow), ''ecological drift'' (or stochasticity, for genetic drift), and ''selection'' in broader term (species instead of allele). Words with high probabilty generated by Topic 2 were around pattern of beta diversity using the most commonly used metric for phylogenetic diversity, ''pd'', or spatial analysis.
+
+We could investigate the probability that each document is generated from each topic. We shall see that each topic was associated with 2-7 papers (probability ~1.0).
+```{r gamma, message=FALSE}
+pd_gamma<-tidy(pd_stm, matrix="gamma", document_names = rownames(corpus_pd_dfm))
+
+ggplot(pd_gamma, aes(gamma, fill = as.factor(topic))) +
+  geom_histogram(alpha = 0.8, show.legend = FALSE) +
+  facet_wrap(~ topic, ncol = 3) +
+  labs(title = "Distribution of document probabilities for each topic",
+       subtitle = "Each topic is associated with 2-7 papers",
+       y = "Number of papers", x = expression(gamma))
+```
+
+We could focus further to Topic 2 which contain the word evolution to see what kind of papers were associated with this Topic and go to those papers and see their discussion. This could be done using the corpus (`corpus_pd$text`) or just read directly. I will choose the latter to get more context.
+
+```{r docInvestigate, message=FALSE}
+pd_gamma %>% filter(topic==2) %>% mutate(document=reorder(document,gamma)) %>% filter(gamma>0.85) %>% 
+  ggplot(aes(document,gamma)) +
+  geom_col() +
+  coord_flip()
+```
+
+The paper from Fritz et al (2012) did discuss the evolutionary history of the taxa in question as a result of spatial structure within the residuals of correlation between phylogenetic diversity and species richness. The motivation of this paper was also evolution-minded, hypothesizing that ''phylogenetic history has left a detectable signature on patterns of contemporary species richness''. The paper with second-highest probability also test the hypothesis of phylogenetic turnover affected by environmental structure, but the paper with third-highest probability discuss more about spatial mismatch of phylogenetic diversity.
+
+Although Topic 2 generate the word associated with ''evolution'', the discussion on ''evolution'' concept was not as I imagine it would be. The papers associated with this topic discuss the pattern of phylogenetic beta diversity or the spatial aspect of phylogenetic diversity, which was the most people can get on evolution as phylogenetic beta diversity almost certainly include biogeography, which includes evolutionary history. They were assuming that the phylogenetic tree used in their analysis has incorporate species' evolutionary history as much as a phylogenetic tree could give and then elaborate more on the ecological concepts.
+
+I was apparently misunderstand the state of research on ''phylogenetic diversity''. I was thinking this is the new way of evolution explaining ecology so that there will be a lot of evolutionary discussion within phylogenetic diversity research. Instead, most of papers (at least that I found) were doing the opposite, seeking way on how ecology explain evolution. Bringing more evolutionary explanations is apparently only possible if we took geological timescale into account or have long term observation that explicitly show selection or speciation.
+
+### Disclaimer
+
+This review is by no means trying to be a representative review on the extent of evolutionary explanations in research using phylogenetic diversity metrics. I am just trying to pitch this idea to a wider community of ecologist, looking for anyone who might has done similar review or currently doing the same thing. There were tons of papers about phylogenetic diversity that are out of my radar because of the paywall or different keyword coverage, so feel free to disagree with my conclusions.

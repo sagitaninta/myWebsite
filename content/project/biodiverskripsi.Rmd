@@ -1,0 +1,33 @@
+---
+title: Biodiverskripsi - The Biodiversity Theses Database Project
+date: 2019-04-11T08:53:29+07:00
+draft: true
+summary: Collating biodiversity data from unpublished student theses.
+header: #image should be in 'static/img'
+  image: 'biodiverskripsi.png'
+  caption: 'Designed by Tambora Muda Indonesia'
+  focal_point: 'Smart'
+  preview: 'true'
+show_comments: true
+tags:
+- biodiversity
+- database
+- theses
+- research
+---
+
+This project collate biodiversity data from unpublished student theses all over Indonesia issued from 2000 to 2017 to understand the extent of biodiversity knowledge gap filled by undergraduate research in the last decade. The resulting dataset contain various taxa commonly studied for undergraduate theses and was currently [published](https://www.gbif.org/dataset/ca58433a-3ff8-492f-9d7b-6f6d289eb6d6) in Global Biodiversity Information Facility ([GBIF](https://www.gbif.org)). We are working to publish a corresponding paper to further increase the usage level of our dataset and assess the state of ecological monitoring research in Indonesia.
+
+Biodiverskripsi was conducted by a dedicated team from [Tambora Muda Indonesia](http://tamboramuda.org) and several university stakeholders who share the same understanding on the importance of integrated biodiversity data for scientific research and conservation practices. We are currently collaborating with Universitas Papua, Universitas Gadjah Mada, Universitas Sumatera Utara, and several groups of independent researchers from various universities. We are expecting more Indonesian universities, students, practitioner or even public enthusiasts to collaborate in this project.
+
+![*Our team in our data enumeration workshop for extracting biodiversity data from student theses*](https://3.bp.blogspot.com/-b1kqCSg75-I/W55VDewH1eI/AAAAAAAAECs/a-1OT_irITEM9bnwKHjTvKXXKmjZZ2ZtACLcBGAs/s1600/workshop_4.jpg)
+
+![*Initial meeting with potential university partners*](https://2.bp.blogspot.com/-F4Q03e86R5g/W55R8qGbJDI/AAAAAAAAECU/yUkN7QRv0Agw3KjZUStCcq7Bjr0O1cGrQCLcBGAs/s1600/lokakarya_1.jpg)
+
+
+As a part of Tambora Muda Indonesia mission to encourage young conservationists to contribute to Indonesian conservation, this project held several mini-workshops for Indonesian students. Biodiversity data portal was not the common norm currently and using data portal was challenging for most of our participants. The seemingly intuitive design of GBIF portal was even deemed confusing by several participants.
+
+![*One of our mini-workshop on using data portal from GBIF*](https://3.bp.blogspot.com/-p-_D5Db8eIs/XFG2EzUFmbI/AAAAAAAAEFU/Os_8RMxT2jA2FhG4TttYpmmwP75iUNGFgCEwYBhgL/s640/6.jpg)
+
+If you are interested in our project, or have other relevant grey literature you want to contribute, contact us at biodiverskripsi@tamboramuda.org. See our [project page](https://www.gbif.org/project/lbJtcnYiuykmyWWQWI4I2/the-biodiversity-theses-database) in GBIF for more information in English and our [portal](https://biodiverskripsi.org) for more information in Indonesian.
+

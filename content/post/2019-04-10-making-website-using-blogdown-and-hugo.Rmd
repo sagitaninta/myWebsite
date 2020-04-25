@@ -1,0 +1,104 @@
+---
+title: What they don't tell you about making website using blogdown and hugo
+author: Sabhrina Gita Aninta
+publishDate: '2019-04-30'
+slug: what-they-don-t-tell-you-about-making-website-using-blogdown-and-hugo
+categories: [rstats]
+tags: 
+  - R
+image     :
+  caption: ''
+  focal_point: ''
+---
+
+One of the amazing things that `R` could do is making a static website through the package `blogdown`. When I first heard about that, I thought I could do it by following a guideline or any other R tutorial. Just read the documentations, the tutorials, the example codes, and it will be done! 
+
+Apparently, ...
+
+![](https://media.giphy.com/media/XSQfjQpir1eFO/giphy.gif)
+
+This is even for me that actually not exactly level-zero-experience with html and css. I knew a few html and css because of Friendster--may it rest in peace--, but it is different compared to navigating through the different cases of themes and templates of hugo. It is difficult to find reference or solution for many types of problems because people don't used to report negative results; all the posts are about happy working websites. Leave the issues to stackoverflow and github, which is not really easy to read, not to mention when different persons used different terms for the same problem.
+
+Thus, this post is a collection of my ~rant~ lessons-learned that may of use to everyone who are in the middle of making their static website using `blogdown` and `hugo`. Not only the success but also all the pain involved.  This is not a general topic of error as I did this using the hugo Academic theme so that any error that I may find will revolve around this particular theme. 
+
+# Fantastic hugo-blogdown resources and where to find them
+
+Yihui, Amber, and Allison made [an amazing book](https://bookdown.org/yihui/blogdown/) about using `blogdown` to make your own website. It is indeed an excellent place to kickstart your website-making project. I was enlightened about the difference between static and dynamic websites, and they always provide link, footnotes, and appendices for necessary further reads if we want to know further. If reading a whole book is too much, you could try [Allison's](https://support.rbind.io/2017/06/16/academic-site-apreshill/) and [Amber's](https://amber.rbind.io/2016/12/19/website/) own post about making website using `blogdown`.
+
+Still, a certain level of familiarity with the kinds of languages and codes necessary for building a website is necessary. I think it is fair, however, to assume that the readers already fulfill this pre-requisite when they are seeking a way to make their own website. With the advance of internet speed, we could basically teach ourselves anything these days. Nonetheless, I shall warn that it could be very frustrating for beginners, especially when things don't work out as the tutorial shown.
+
+# Starting it out: the pain
+
+![](https://imgflip.com/i/hwn3n)
+
+Everything always looks easier in the tutorials than in reality, at least for me, but this is what motivates us, right? 
+
+To be fair, however, the guideline have told us if we ever want to try something different, we may found different problems. I was just not prepared. You better prepared.
+
+## 1. You may not be able to install things from R and that is fine.
+
+When I first tried `blogdown::install_hugo()`, I always got rejected with various error messages. Most of them said `reported length does not match downloaded length`. This could mean that there was something with the speed of internet connection so that the download process was not complete. There is also possibility of bug in `download.files()` function in R, but living in Indonesia, I believe it was the first.
+
+When you are living in a country with the slowest internet connection possible, it is very easy to forgot this while reading the tutorials from first-world countries with first-class internet speed. And again, people don't usually tell a story about errors.
+
+![](https://imgflip.com/i/1wa928)
+
+When you are in a hurry, I suggest you download it using your web browser instead from `R` and place the corresponding file accordingly. How to place the files really depends on how you are managing your `R` contents in your laptop or PC, and this actually lead me to being less ignorant on how the `install_` function works.
+
+## 2. blogdown is ''just'' a wrapper function around hugo
+
+It is on the guideline, and again, this is my ignorance while reading the book. I should not assume that everything will be on the book and I do not need to read the package's documentation. Package's documentation was not a very fun reading material. Sue me, I got [backup](https://twitter.com/nic_fox_/status/1115928604456759296).
+
+If you have read the hugo documentation, you can see that the developers of `blogdown` has done us a big favor when `blogdown` includes the `new_post()` function and `New Post` addins. Dealing with various variables everytime you want to write for your posts is painful.
+
+What I don't intuitively get while developing my website is that all those hugo commands in the hugo theme documentation could be executed through `blogdown::hugo_cmd(...)`, reminding me that `blogdown` is just a wrapper function for hugo. We can run hugo command from its terminal just fine, but people who learn R by using R studio may not really familiar with terminal-based commands.
+
+> Reading the documentation is always recommended
+
+And that what I read in hugo documentation does not necessarily work in R markdown. So, everything that hugo does, if we want to do it in R or R markdown, we have to put blogdown wrapper function. This includes inserting shortcodes, adding new content, etc. Talking about making new content, ...
+
+### ...making content is different from making new post
+
+Well, duh. You don't say.
+
+But this is not really intuitive for me who usually do a blog instead of a project website. This time, I was trying to put the various projects that I had been done or have been doing, and it required a good design to make readers comfortable in navigating around my website, separating which is which.
+
+The `blogdown::new_content()` is different from `blogdown::new_post()` in which the package did not provide a lot of arguments to work with. This is because your content could be anything. In my case, I want to make separate project pages and posts in which I could link to using filter that depends on tags.
+
+```{r newContent, eval=FALSE}
+blogdown::new_content("indobats.Rmd", kind="project")
+blogdown::new_content("studiJerman.Rmd", kind="project")
+```
+
+Using the `new_content()` function, however, the content always made under the ''post'' folder. This is how  `hugo new` command works, adding new files inside the post folder while making new directories such as ''content'' and ''resources''. To test this, I run the `hugo_cmd()` function. Note that we don't need to write ''`hugo`'' at the onset of the command line as the function already do this for us. (That's what a wrapper function do, I guess?)
+
+```{r newProject, eval=FALSE}
+blogdown::hugo_cmd("new  --kind project project/biodiverskripsi.Rmd")
+```
+
+For me who is an R evangelist, it looks like any issues around hugo and its features must be related to R and Rstudio. I shall remind you:  they don't. Sometimes it is just a bug in the theme. Sometimes it is on hugo. But we shall not blame each other.
+
+## 3. You should seriously checking for updates
+
+Working with open source softwares like these, we should be aware that anytime, anywhere, people are also have problems and making requests and updates. I just downloaded the Academic theme from the install guideline three days before I wrote this post and got Academic version 4.1.0 in the academic-kickstart-master. When I wrote this post, they already got version 4.2.0 which is out this April 2019. Rad. In this regard, I should emphasize the book's note on choosing a theme that has always been updated; gcushen is really responsive!
+
+We should also check all the updates on all the softwares we used. R, RStudio, hugo, your web browser, you name it. Sometimes the problem is already solved and people got this covered but you just weren't there when it happens. Allison has a nice [take](https://alison.rbind.io/post/2019-03-04-hugo-troubleshooting/) on this.
+
+## 4. Reduce assumptions
+
+Coming from a background of user with no knowledge whatsoever in web development, design, and programming in general, I always assume that computers and their language are perfectly assembled to do what I want, **the way I wanted them to do it**. I was totally wrong. Computers are dumb and we have to make discrete, single-step commands to do make them do stuffs, and everything hence usually come in their most basic part.
+
+For example, I was trying to enable a filter button for my project section in my home page using Academic theme, and I had been pulling my hair out for three days trying to figure out why the buttons don't show up. Apparently, the filter button can only filter one tag whereas I use multiple tags; I assume that the filter will work with multiple tags while it does not.
+
+Another thing is the featured image of project page in the Academic theme. The theme was made using markdown TOML and I was confused why it does not work in R markdown YAML. Duh, it was a totally different thing. I do not want to mess with anything under the `themes/` directory or I got trouble with the upcoming updates.
+
+# Concluding your website
+
+> A good website is a done website. A great website is a deployed website. A perfect website is neither. 
+(Modified from [*Shit Academics Say*](https://twitter.com/academicssay/status/657529133153566722))
+
+With all the power of R, CSS, and hugo, it is very easy to get lost on tweaking your website and never to deploy it to public. I suggest that when you want to make your website, go with the basic necessary framework to advertise your work properly and publish it right after each important website feature get at least one content or your website will never exist. 
+
+I believe I will encounter my own issues for deployment and I will keep people updated for important ~~rant~~ lessons-learned.
+
+Although it looks a bit difficult, I shall remind you that it is a rewarding experience if you like to learn. I have no background whatsoever in computer science, informatics, or programming, but learning how to do something by coding is a constant problem-solving which is easily evaluated. For example, if you did it wrong, it doesn't work. If you did it right, it works, and it is awesome. Keep trying! 

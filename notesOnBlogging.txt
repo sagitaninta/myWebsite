@@ -1,0 +1,4 @@
+To run the blog, open academic.Rproj and run blogdown::serve_site()
+Currently it does not work due to error in shell command but academic kickstarter work just fine
+
+15/12/2019

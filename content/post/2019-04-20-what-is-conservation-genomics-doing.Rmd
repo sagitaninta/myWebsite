@@ -1,0 +1,50 @@
+---
+title: What is conservation genomics doing?
+author: Sabhrina Gita Aninta
+date: '2019-04-20'
+slug: what-is-conservation-genomics-doing
+categories: [Research]
+tags:
+- PhD
+- conservation
+- genomics
+- molecular
+---
+
+When I applied for my PhD, I have done some research on what conservation genomics research has actually done. There were several interesting review articles that said more or less the same thing. It is more interesting, however, to see how other labs are doing.
+
+## USGS
+
+I found this [USGS website](https://www.usgs.gov/centers/fort/science/conservation-genomics?qt-science_center_objects=0#qt-science_center_objects) communicating about several conservation genomics projects on Sage-grouse and other birds.
+
+There were also various projects in charismatic species in Stanford's [Program for Conservation Genomics](https://cehg.stanford.edu/programs/program-conservation-genomics-pcg/pcg-projects), ranging from assembling reference genome to investigating population history to check for effects on environmental change.
+
+Various projects are also available in [UC Conservation Genomics Consortium](https://ucconservationgenomics.eeb.ucla.edu/projects/), investigating various conservation-related things using species' genetic makeup. I was really interested on this project about the [mountain lion](https://ucconservationgenomics.eeb.ucla.edu/projects/mountain-lion/), which looks really similar with what I aimed to do
+
+Smithsonian also has its own department! (https://nationalzoo.si.edu/center-for-conservation-genomics)
+Center for Conservation Genomics scientists sequence genomes and transcriptomes in large part to develop markers for detailed population studies, and to assess responses to stressors such as pathogens and climate change.
+
+A bunch of Open Acces articles related to Conservation Genomics (https://www.mdpi.com/journal/genes/special_issues/Conservation_Genetics_Genomics)
+
+There is even a program course ''Bioinformatics Analysis for Conservation Genomics'' in Smithsonian Mason (https://smconservation.gmu.edu/programs/graduate-and-professional/bioinformatics-analysis-for-conservation-genomics/)
+What You'll Study
+Tutorials that emphasize hands-on training in computational tools used in conservation genomic analyses
+Design of conservation genomics projects
+Overview of whole genome sequencing and reduced representation methods
+Genome assembly and annotation
+Read mapping and variant calling
+Estimation of genome-wide diversity, inbreeding, and historical demography
+Analysis of natural selection in population genomic data sets
+Targeted capture enrichment methods and analysis
+RNAseq methods and analysis
+Use of Unix command line to access Smithsonian high-performance computing resources and pre-compiled software
+Participants should have completed basic genetics and evolutionary biology coursework or have previous experience with genetics, genomics, or evolutionary biology.
+
+https://wp.natsci.colostate.edu/funklab/research/conservation-genomics/
+
+https://www.helsinki.fi/en/researchgroups/evolution-conservation-and-genomics
+
+http://www.cfc.umt.edu/research/whiteley/
+http://www.wildlifegenetichealth.org/teaching/conservation-genomics/
+https://www.ed.ac.uk/vet/conservation-science/conservation-genetics
+http://www.earlham.ac.uk/articles/conservation-genomics---saving-genomes-not-individuals
