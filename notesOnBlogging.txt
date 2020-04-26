@@ -2,3 +2,7 @@ To run the blog, open academic.Rproj and run blogdown::serve_site()
 Currently it does not work due to error in shell command but academic kickstarter work just fine
 
 15/12/2019
+
+Finally get the whole thing up and running with version 4.8.0., R version 4.0.0, Hugo version 0.69.0. Next step is to tailor it according to my research profile following some examples: https://sourcethemes.com/academic/#expo
+
+26/04/2020
